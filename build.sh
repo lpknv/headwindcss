@@ -5,6 +5,6 @@ clear
 
 mkdir -p build
 cd build
-gcc ../main.c -o ./main
+gcc ../../src/main.c -o ./main
 ./main
 cd ..
