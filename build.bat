@@ -1,9 +1,8 @@
 @ECHO OFF
-cls
+if exist build rmdir /S /Q build
 
-if not exist build mkdir build
-
+mkdir build
 pushd build
 gcc ../src/main.c -o main
-main
+main %1
 popd
