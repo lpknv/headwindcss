@@ -1,4 +1,6 @@
-# Headwindcss
+# This is a fresh repo! So nothing fancy to see here yet...
+
+## Headwindcss
 A utility-first CSS CLI with no Node.js, no package manager, and no JavaScript required.
 
 
