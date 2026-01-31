@@ -90,7 +90,7 @@ void get_css_classes(char *input) {
 
   class_list[css_class_index] = '\0';
 
-  printf("file read:\n\n%s\n\n", class_list);
+  printf("%s\n\n", class_list);
 
   free(class_list);
   fclose(file);
