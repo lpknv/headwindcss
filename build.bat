@@ -1,4 +1,5 @@
 @ECHO OFF
+cls
 if exist build rmdir /S /Q build
 
 mkdir build
