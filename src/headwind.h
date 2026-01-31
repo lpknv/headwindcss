@@ -34,20 +34,25 @@ void css_class_to_property(char *css_class) {
 
 void get_css_classes(char *input) {
 
-  char* class_list = (char *)malloc(_MAX_PATH);
   char* css_class_tokens;
   char last_char = HTML_ATTRIBUTE_CLASS[strlen(HTML_ATTRIBUTE_CLASS) - 1];
-
+  
   int class_attr_end = 0;
   int class_start = 0;
   int character_from_file;
   int count_start = 0;
-
+  
   int token_len = strlen(HTML_ATTRIBUTE_CLASS);
   int html_attr_class_index = 0;
   int css_class_index = 0;
-
+  
   FILE *file = fopen(input, "rb");
+
+  fseek(file, 0, SEEK_END);
+  long size = ftell(file);
+  rewind(file);
+
+  char* class_list = (char*)malloc(size);
 
   if(!file) {
     printf("File not found. Assuming input is just a string...");
@@ -61,6 +66,7 @@ void get_css_classes(char *input) {
   for(int i = 0; i < ARRAY_SIZE(input); i++) {
     char character = input[i];
 #endif
+
     if (count_start == 0) {
       if (character == HTML_ATTRIBUTE_CLASS[html_attr_class_index]) {
 
@@ -73,7 +79,7 @@ void get_css_classes(char *input) {
         html_attr_class_index = 0;
       }
     } else {
-      if (character == DOUBLE_QUOTE) {
+      if (character == DOUBLE_QUOTE || character == OPEN_CURLY) {
         count_start = 0;
         class_list[css_class_index++] = ' ';
       } else {
@@ -84,7 +90,8 @@ void get_css_classes(char *input) {
 
   class_list[css_class_index] = '\0';
 
-  printf("%s", class_list);
+  printf("file read:\n\n%s\n\n", class_list);
+
   free(class_list);
   fclose(file);
 }
