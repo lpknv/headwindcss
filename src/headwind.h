@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <malloc.h>
 
 #define ARRAY_SIZE(arr)  (sizeof(arr) / sizeof((arr)[0]))
 
@@ -24,70 +25,78 @@
 #define DASH 0x2d
 #define AT_SIGN 0x40
 #define EXCLAMATION_MARK 0x21
+#define EQUAL 0x3D
+#define HTML_ATTRIBUTE_CLASS "class=\""
 
 void css_class_to_property(char *css_class) {
 
 }
 
-void get_css_classes(char *input, const char *css_attribute) {
-  const char *html_class_attribute = css_attribute; // in this case 'class="'
-  int class_end = 0, class_start = 0, c, count_start = 0;
-  char last_char = html_class_attribute[strlen(html_class_attribute) - 1];
-  int token_len = strlen(html_class_attribute), j = 0, css_class_index = 0;
+void get_css_classes(char *input) {
+
+  char* class_list = (char *)malloc(_MAX_PATH);
+  char* css_class_tokens;
+  char last_char = HTML_ATTRIBUTE_CLASS[strlen(HTML_ATTRIBUTE_CLASS) - 1];
+
+  int class_attr_end = 0;
+  int class_start = 0;
+  int character_from_file;
+  int start_counting_file_characters = 0;
+
+  int token_len = strlen(HTML_ATTRIBUTE_CLASS);
+  int html_attr_class_index = 0;
+  int css_class_index = 0;
 
   size_t max_len = 1024;
   
-  char *css_class_list = malloc(max_len), *buffer;
-
-
   // Read html file and print its content
   FILE *file = fopen(input, "rb");
 
   if(!file) {
-    printf("Error! File not found.");
+    printf("File not found. Assuming input is just a string...");
     #define FILE_NOT_FOUND
   }
 
   // extract css classes and store them
 #ifdef FILE_NOT_FOUND
-  while ((c = fgetc(file)) != EOF) {
-    char character_from_file = (char)c;
+  while ((character_from_file = fgetc(file)) != EOF) {
+    char character = (char)character_from_file;
 #else
   for(int i = 0; i < ARRAY_SIZE(input); i++) {
-    char character_from_file = input[i];
+    char character = input[i];
 #endif
 
-    if (!count_start) {
-      if (character_from_file == html_class_attribute[j]) {
-        j++;
-        if (j == token_len) {
-          count_start = 1;
-          j = 0;
+    if (!start_counting_file_characters) {
+      if (character == HTML_ATTRIBUTE_CLASS[html_attr_class_index]) {
+        html_attr_class_index++;
+        if (html_attr_class_index == token_len) {
+          start_counting_file_characters = 1;
+          html_attr_class_index = 0;
         }
       } else {
-        j = 0;
+        html_attr_class_index = 0;
       }
     } else {
-      if (character_from_file == last_char) {
-        count_start = 0;
-        class_end = 1;
+      if (character == DOUBLE_QUOTE) {
+        start_counting_file_characters = 0;
+        class_attr_end = 1;
       } else if (css_class_index < max_len - 1) {
-        css_class_list[css_class_index++] = character_from_file;
+        class_list[css_class_index++] = character;
       }
     }
   }
 
-  css_class_list[css_class_index] = '\0';
+  class_list[css_class_index] = '\0';
 
-  char *css_class_tokens = strtok(css_class_list, " ");
+  // Store characters inside the html class attribute
+  css_class_tokens = strtok(class_list, " ");
 
   while(css_class_tokens != NULL) {
     printf("%s\n", css_class_tokens);
     css_class_tokens = strtok(NULL, " ");
   }
 
-  free(css_class_list);
-
+  free(class_list);
   fclose(file);
 }
 
