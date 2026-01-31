@@ -28,9 +28,6 @@
 #define EQUAL 0x3D
 #define HTML_ATTRIBUTE_CLASS "class=\""
 
-void css_class_to_property(char *css_class) {
-
-}
 
 void get_css_classes(char *input) {
 
@@ -78,7 +75,7 @@ void get_css_classes(char *input) {
       } else {
         html_attr_class_index = 0;
       }
-    } else {
+    } else { 
       if (character == DOUBLE_QUOTE || character == OPEN_CURLY) {
         count_start = 0;
         class_list[css_class_index++] = ' ';
