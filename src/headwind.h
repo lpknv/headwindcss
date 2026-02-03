@@ -53,16 +53,10 @@ void get_css_classes(char *input) {
 
   if(!file) {
     printf("File not found. Assuming input is just a string...");
-    #define FILE_NOT_FOUND
   }
 
-#ifdef FILE_NOT_FOUND
   while ((character_from_file = fgetc(file)) != EOF) {
     char character = (char)character_from_file;
-#else
-  for(int i = 0; i < ARRAY_SIZE(input); i++) {
-    char character = input[i];
-#endif
 
     if (count_start == 0) {
       if (character == HTML_ATTRIBUTE_CLASS[html_attr_class_index]) {
